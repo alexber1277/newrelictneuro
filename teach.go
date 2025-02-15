@@ -1,4 +1,4 @@
-package main
+package newrelictneuro
 
 type TeachData struct {
 	Inputs  []float64 `json:"inputs"`

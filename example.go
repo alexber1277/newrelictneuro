@@ -1,10 +1,10 @@
-package main
+package newrelictneuro
 
 import (
 	"log"
 )
 
-func main() {
+func example() {
 
 	dataTeach := []*TeachData{
 		{Inputs: []float64{0, 0, 0}, Outputs: []float64{0}},
