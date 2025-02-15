@@ -30,4 +30,4 @@ func main() {
 }
 
 ```
-!!! Train perceptron without backpropogation
+`!!! Train perceptron without backpropogation`
