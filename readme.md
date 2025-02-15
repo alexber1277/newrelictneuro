@@ -1,8 +1,5 @@
 ### NewRelictNeuro (Genetic Algorithm Network)
-### Train perceptron without backpropogation
-
 ```go
-
 package main
 
 import (
@@ -32,5 +29,5 @@ func main() {
 
 }
 
-
 ```
+!!! Train perceptron without backpropogation
