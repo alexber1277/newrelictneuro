@@ -1,4 +1,10 @@
 ### NewRelictNeuro (Genetic Algorithm Network)
+
+```go
+go get -u github.com/alexber1277/newrelictneuro
+```
+
+
 ```go
 package main
 
