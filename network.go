@@ -18,6 +18,8 @@ type Network struct {
 	Iterates  int             `json:"iterates"`
 	Net       [][]*Percentron `json:"net"`
 	Data      []*TeachData    `json:"teachdata"`
+	Score     float64         `json:"score"`
+	MpData    interface{}     `json:"mp_data"`
 	Error     float64         `json:"error"`
 	ErrorList []float64       `json:"error_list"`
 	Paralell  bool            `json:"paralell"`
