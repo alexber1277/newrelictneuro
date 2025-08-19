@@ -2,6 +2,7 @@ package newrelictneuro
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"math"
 	"math/rand"
@@ -35,10 +36,11 @@ type Relict struct {
 }
 
 type NeuroConf struct {
-	NetLayer    int `json:"net_layer"`
-	NetNeurons  int `json:"net_neurons"`
-	NetPops     int `json:"net_pops"`
-	NetLastBest int `json:"net_last_best"`
+	NetLayer    int    `json:"net_layer"`
+	NetNeurons  int    `json:"net_neurons"`
+	NetPops     int    `json:"net_pops"`
+	NetLastBest int    `json:"net_last_best"`
+	FileDump    string `json:"file_dump"`
 }
 
 var (
@@ -47,6 +49,7 @@ var (
 	NetLayerRelict   = 1
 	NetNeuronsRelict = 5
 	ListRelict       []*Relict
+	FileDump         string
 )
 
 func init() {
@@ -66,8 +69,13 @@ func InitRelict(layers int, nodes int, data []*TeachData, conf ...NeuroConf) *Re
 		NetNeuronsRelict = conf[0].NetNeurons
 		PopulationRelict = conf[0].NetPops
 		LastBestRelict = conf[0].NetLastBest
+		FileDump = conf[0].FileDump
 	}
-	return r.InitNets()
+	rel, ok := LoadDump()
+	if !ok {
+		return r.InitNets()
+	}
+	return rel
 }
 
 func (r *Relict) InitNets() *Relict {
@@ -200,6 +208,10 @@ func (r *Relict) Train(fn func(net *Relict)) *Relict {
 			return ListRelict[i].Result.Score > ListRelict[j].Result.Score
 		})
 		ListRelict[0].LogIteration(iter)
+		if iter%100 == 0 && iter >= 100 {
+			ListRelict[0].SaveDump()
+			log.Println("save dump")
+		}
 		if ListRelict[0].Break {
 			break
 		}
@@ -207,6 +219,30 @@ func (r *Relict) Train(fn func(net *Relict)) *Relict {
 		r.AddPopsAndMutate()
 	}
 	return ListRelict[0]
+}
+
+func LoadDump() (*Relict, bool) {
+	var rel *Relict
+	bts, err := ioutil.ReadFile(FileDump)
+	if err != nil {
+		return rel, false
+	}
+	if err := json.Unmarshal(bts, &rel); err != nil {
+		log.Println(err)
+		return rel, false
+	}
+	return rel, true
+}
+
+func (r *Relict) SaveDump() {
+	bts, err := json.Marshal(r)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if err := ioutil.WriteFile(FileDump, bts, 0644); err != nil {
+		log.Println(err)
+	}
 }
 
 func (r *Relict) LogIteration(iter int) {
