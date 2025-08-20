@@ -28,7 +28,6 @@ type Network struct {
 func init() {
 	rand.Seed(time.Now().UnixNano())
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
 }
 
 func (n *Network) AddData(inps, outs []float64) *Network {
@@ -188,9 +187,11 @@ func (n *Network) Train(logIter int, minPredel float64) *Network {
 		var listNew []*Network
 		wg.Add(runtime.NumCPU())
 		for s := 0; s < runtime.NumCPU(); s++ {
-			func() {
+			go func() {
 				defer wg.Done()
+				mtx.Lock()
 				nNew := actNet.Copy().Mutate()
+				mtx.Unlock()
 				nNew.Data = dataCopy
 				nNew.Forward()
 				mtx.Lock()
